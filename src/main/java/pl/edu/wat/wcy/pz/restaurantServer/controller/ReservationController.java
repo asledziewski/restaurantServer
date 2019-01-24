@@ -1,35 +1,67 @@
 package pl.edu.wat.wcy.pz.restaurantServer.controller;
 
+import lombok.AllArgsConstructor;
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.edu.wat.wcy.pz.restaurantServer.model.Reservation;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import pl.edu.wat.wcy.pz.restaurantServer.entity.Reservation;
 import pl.edu.wat.wcy.pz.restaurantServer.service.ReservationService;
 
+import java.net.URI;
 import java.util.Collection;
 import java.util.Optional;
 
-@CrossOrigin(origins = "http://localhost:8101", maxAge = 3600)
+@AllArgsConstructor
 @RestController
+@CrossOrigin
 public class ReservationController {
 
-    private final ReservationService reservationService;
+    private ReservationService reservationService;
 
-    @Autowired
-    public ReservationController(ReservationService reservationService) {
-        this.reservationService = reservationService;
-    }
 
-    @RequestMapping(value = "/reservation", method = RequestMethod.GET)
+    @GetMapping("/reservations")
     public Collection<Reservation> getReservations() {
         return reservationService.getReservations();
     }
 
 
-    @RequestMapping(value = "/reservation/{id}", method = RequestMethod.GET)
-    public Reservation getReservationById(@PathVariable long id) throws ObjectNotFoundException {
+    @GetMapping(value = "/reservations/{id}")
+    public Reservation getReservationById(@PathVariable(name = "id") Long id){
         Optional<Reservation> reservation = reservationService.getReservationById(id);
-        return reservation.orElseGet(Reservation::new);
+        if(!reservation.isPresent())
+            throw new RuntimeException("Reservation not found");
+
+        return reservation.orElse(null);
     }
+
+    @PostMapping("/reservations")
+    public ResponseEntity<Object> addReservation(@RequestBody Reservation reservation) {
+        Reservation createdReservation = reservationService.addReservation(reservation);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(createdReservation.getReservationId())
+                .toUri();
+        return ResponseEntity.created(location).build();
+    }
+
+    @PutMapping("/reservations/{id}")
+    public void updateReservation(@PathVariable("id") Long id, @RequestBody Reservation reservation) {
+        reservationService.updateReservation(id, reservation);
+
+    }
+
+    @DeleteMapping("/reservations/{id}")
+    public void deleteReservation(@PathVariable("id") Long id){
+        Optional<Reservation> reservation = reservationService.getReservationById(id);
+        if(!reservation.isPresent())
+            throw new RuntimeException("Reservation not found");
+        reservationService.deleteReservationById(id);
+    }
+
+
 }
 
