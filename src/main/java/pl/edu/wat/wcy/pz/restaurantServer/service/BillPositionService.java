@@ -1,11 +1,16 @@
 package pl.edu.wat.wcy.pz.restaurantServer.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import pl.edu.wat.wcy.pz.restaurantServer.entity.Bill;
 import pl.edu.wat.wcy.pz.restaurantServer.entity.BillPosition;
+import pl.edu.wat.wcy.pz.restaurantServer.entity.Dish;
+import pl.edu.wat.wcy.pz.restaurantServer.entity.RTable;
 import pl.edu.wat.wcy.pz.restaurantServer.repository.BillPositionRepository;
 import pl.edu.wat.wcy.pz.restaurantServer.repository.BillRepository;
+import pl.edu.wat.wcy.pz.restaurantServer.repository.DishRepository;
 
 import java.util.Collection;
 import java.util.List;
@@ -16,34 +21,53 @@ import java.util.Optional;
 public class BillPositionService {
 
     private BillPositionRepository billPositionRepository;
-    private BillRepository billRepository;
+    private BillService billService;
+    private DishService dishService;
 
     public List<BillPosition> getBillPositions(){
         return billPositionRepository.findAll();
     };
 
     public Optional<BillPosition> getBillPositionById(Long id){
-        return billPositionRepository.findById(id);
+        Optional <BillPosition> billPosition = billPositionRepository.findById(id);
+        if(billPosition.isPresent()){
+            return billPosition;
+        }
+        else {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "BillPosition not found.");
+        }
     };
 
     public BillPosition addBillPosition(BillPosition billPosition) {
-        List<BillPosition> billPositionList = billPositionRepository.findAll();
+      //  List<BillPosition> billPositionList = billPositionRepository.findAll();
 
 //        if (billPositionList.stream().map(BillPosition::getEnglishName).anyMatch(billPosition.getEnglishName()::equals) || billPositionList.stream().map(BillPosition::getPolishName).anyMatch(billPosition.getPolishName()::equals))
 //            throw new RuntimeException("BillPosition with this name already exists.");
-
+        if(billService.getBillById(billPosition.getBillId()).get().getStatus().equals("PAID")){
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN, "Bill has been closed.");
+        }
+        else{
+            billPosition.setDishId(dishService.getDishById(billPosition.getDishId().getDishId()).get());
+            billService.getBillById(billPosition.getBillId()).get().changeValue(billPosition.getDishId().getPrice());
+            return billPositionRepository.save(billPosition);
+        }
 //        Bill bill = billRepository.getOne(billPosition.getBillId().getBillId());
 //        bill.getBillPositions().add(billPosition);
 //        billRepository.save(bill);
+//        Dish dish = billPosition.getDishId();
+//        System.out.println(dish.getEnglishName() + " " + dish.getPrice());
 
-        return billPositionRepository.save(billPosition);
+
     }
 
     public void updateBillPosition(Long id, BillPosition billPosition) {
 
         Optional<BillPosition> oldBillPosition = billPositionRepository.findById(id);
         if(!oldBillPosition.isPresent())
-            throw new RuntimeException("BillPosition with id " + id + "does not exist");
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "BillPosition not found.");
         else{
             billPosition.setBillPositionId(id);
             billPositionRepository.save(billPosition);
@@ -52,7 +76,15 @@ public class BillPositionService {
     }
 
     public void deleteBillPositionById(Long id){
-        billPositionRepository.deleteById(id);
+        Optional <BillPosition> billPosition = billPositionRepository.findById(id);
+        if(billPosition.isPresent()) {
+            billService.getBillById(billPosition.get().getBillId()).get().changeValue(-billPosition.get().getDishId().getPrice());
+            billPositionRepository.deleteById(id);
+        }
+        else{
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "BillPosition not found.");
+        }
     }
 
 }

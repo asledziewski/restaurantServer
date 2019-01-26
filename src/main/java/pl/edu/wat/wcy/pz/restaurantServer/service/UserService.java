@@ -1,7 +1,9 @@
 package pl.edu.wat.wcy.pz.restaurantServer.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import pl.edu.wat.wcy.pz.restaurantServer.entity.User;
 import pl.edu.wat.wcy.pz.restaurantServer.repository.UserRepository;
 
@@ -20,23 +22,34 @@ public class UserService {
     };
 
     public Optional<User> getUserById(Long id){
-        return userRepository.findById(id);
-    };
+        Optional <User> user = userRepository.findById(id);
+        if(user.isPresent()){
+            return user;
+        }
+        else {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "User not found.");
+        }
+    }
 
     public User addUser(User user) {
         List<User> userList = userRepository.findAll();
 
-//        if (userList.stream().map(User::getEnglishName).anyMatch(user.getEnglishName()::equals) || userList.stream().map(User::getPolishName).anyMatch(user.getPolishName()::equals))
-//            throw new RuntimeException("User with this name already exists.");
-
-        return userRepository.save(user);
+        if (userList.stream().map(User::getMail).anyMatch(user.getMail()::equals)){
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN, "User with this email already exists.");
+        }
+        else{
+            return userRepository.save(user);
+        }
     }
 
     public void updateUser(Long id, User user) {
 
         Optional<User> oldUser = userRepository.findById(id);
         if(!oldUser.isPresent())
-            throw new RuntimeException("User with id " + id + "does not exist");
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "User not found.");
         else{
             user.setUserId(id);
             userRepository.save(user);
@@ -45,7 +58,13 @@ public class UserService {
     }
 
     public void deleteUserById(Long id){
-        userRepository.deleteById(id);
+        if(userRepository.findById(id).isPresent()){
+            userRepository.deleteById(id);
+        }
+        else{
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "User not found.");
+        }
     }
 
 }

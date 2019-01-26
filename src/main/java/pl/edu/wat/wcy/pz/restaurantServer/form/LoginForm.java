@@ -7,12 +7,7 @@ import javax.validation.constraints.Size;
 
 @Getter
 public class LoginForm {
-    @NotBlank
-    @Email
-    @Size(max = 50)
     private String mail;
-    @NotBlank
-    @Size(min = 6, max = 30)
     private String password;
 
     public String getMail() {

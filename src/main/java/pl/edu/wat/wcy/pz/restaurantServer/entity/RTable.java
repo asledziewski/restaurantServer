@@ -24,17 +24,13 @@ public class RTable {
     @Column(name = "STATUS")
     private String status;
 
-    //dodać status
 
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Reservation> reservations;
 
-//    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "rTableId")
-//    private List<Bill> bills;
-
-    @OneToMany(mappedBy="rTableId",cascade = CascadeType.ALL)
-    @JsonIgnore
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "rTableId")
     private List<Bill> bills;
+
 
     public Long getRTableId() {
         return rTableId;
@@ -60,14 +56,6 @@ public class RTable {
         this.size = size;
     }
 
-    public Long getrTableId() {
-        return rTableId;
-    }
-
-    public void setrTableId(Long rTableId) {
-        this.rTableId = rTableId;
-    }
-
     public String getStatus() {
         return status;
     }
@@ -90,6 +78,10 @@ public class RTable {
 
     public void setBills(List<Bill> bills) {
         this.bills = bills;
+    }
+
+    public void addBill(Bill bill){
+        this.bills.add(bill);
     }
 
 

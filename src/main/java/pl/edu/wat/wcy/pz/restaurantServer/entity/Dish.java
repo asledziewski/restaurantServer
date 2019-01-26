@@ -47,7 +47,7 @@ public class Dish {
     }
 
     public double getPrice() {
-        return price;
+        return this.price;
     }
 
     public void setPrice(double price) {

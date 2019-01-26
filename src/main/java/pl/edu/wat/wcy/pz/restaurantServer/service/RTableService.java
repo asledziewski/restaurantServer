@@ -1,7 +1,9 @@
 package pl.edu.wat.wcy.pz.restaurantServer.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import pl.edu.wat.wcy.pz.restaurantServer.entity.RTable;
 import pl.edu.wat.wcy.pz.restaurantServer.repository.RTableRepository;
 
@@ -20,23 +22,33 @@ public class RTableService {
     };
 
     public Optional<RTable> getRTableById(Long id){
-        return rTableRepository.findById(id);
+        Optional <RTable> rTable = rTableRepository.findById(id);
+        if(rTable.isPresent()){
+            return rTable;
+        }
+        else {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Table not found.");
+        }
     };
 
     public RTable addRTable(RTable rTable) {
-        List<RTable> rTableList = rTableRepository.findAll();
 
-//        if (rTableList.stream().map(RTable::getEnglishName).anyMatch(rTable.getEnglishName()::equals) || rTableList.stream().map(RTable::getPolishName).anyMatch(rTable.getPolishName()::equals))
-//            throw new RuntimeException("RTable with this name already exists.");
-
+    if (rTableRepository.existsByNumber(rTable.getNumber())) {
+        throw new ResponseStatusException(
+                HttpStatus.FORBIDDEN, "Table with this number already exists.");
+    }
+    else {
         return rTableRepository.save(rTable);
+    }
     }
 
     public void updateRTable(Long id, RTable rTable) {
 
         Optional<RTable> oldRTable = rTableRepository.findById(id);
         if(!oldRTable.isPresent())
-            throw new RuntimeException("RTable with id " + id + "does not exist");
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Table not found.");
         else{
             rTable.setRTableId(id);
             rTableRepository.save(rTable);
@@ -45,7 +57,13 @@ public class RTableService {
     }
 
     public void deleteRTableById(Long id){
-        rTableRepository.deleteById(id);
+        if(rTableRepository.findById(id).isPresent()){
+            rTableRepository.deleteById(id);
+        }
+        else{
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Table not found.");
+        }
     }
 
 }

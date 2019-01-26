@@ -32,24 +32,29 @@ public class UserController {
     @GetMapping(value = "/users/{id}")
     public User getUserById(@PathVariable(name = "id") Long id){
         Optional<User> user = userService.getUserById(id);
-        if(!user.isPresent())
-            throw new RuntimeException("User not found");
-
+//        if(!user.isPresent())
+//            throw new RuntimeException("User not found");
         return user.orElse(null);
     }
 
+//    @PostMapping("/users")
+//    public ResponseEntity<Object> addUser(@RequestBody User user) {
+//        User createdUser = userService.addUser(user);
+//
+//        URI location = ServletUriComponentsBuilder
+//                .fromCurrentRequest()
+//                .path("/{id}")
+//                .buildAndExpand(createdUser.getUserId())
+//                .toUri();
+//
+//        mailService.sendEmail(user.getMail(), "Welcome to Restaurant!", "Hello " + user.getFirstName() + ", thanks for using our system!");
+//        return ResponseEntity.created(location).build();
+//    }
+
     @PostMapping("/users")
-    public ResponseEntity<Object> addUser(@RequestBody User user) {
+    public void addUser(@RequestBody User user){
         User createdUser = userService.addUser(user);
-
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(createdUser.getUserId())
-                .toUri();
-
         mailService.sendEmail(user.getMail(), "Welcome to Restaurant!", "Hello " + user.getFirstName() + ", thanks for using our system!");
-        return ResponseEntity.created(location).build();
     }
 
     @PutMapping("/users/{id}")

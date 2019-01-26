@@ -21,16 +21,10 @@ public class Bill {
     private String status;
     @Column(name ="CREATION_DATE")
     private Date creationDate;
-
-//    @JsonBackReference
-//    @ManyToOne
-//    @JoinColumn(name = "RTABLE_ID")
-//    private RTable rTableId;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "RTABLE_ID")
-    @JsonBackReference
-    private RTable rTableId;
+    @Column(name = "RTABLE_ID")
+    private Long rTableId;
+    @Column(name = "VALUE")
+    private double value;
 
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "billId")
     private List<BillPosition> billPositions;
@@ -59,14 +53,25 @@ public class Bill {
         this.creationDate = creationDate;
     }
 
-    public RTable getRTableId() {
+    public Long getRTableId() {
         return rTableId;
     }
 
-    public void setRTableId(RTable rTableId) {
+    public void setRTableId(Long rTableId) {
         this.rTableId = rTableId;
     }
 
+    public double getValue() {
+        return value;
+    }
+
+    public void setValue(double value) {
+        this.value = value;
+    }
+
+    public void changeValue(double value){
+        this.value += value;
+    }
 
     public List<BillPosition> getBillPositions() {
         return billPositions;

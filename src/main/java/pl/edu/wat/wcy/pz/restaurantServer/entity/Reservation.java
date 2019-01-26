@@ -19,15 +19,12 @@ public class Reservation {
     private Long reservationId;
     @Column(name = "DATE")
     private Date date;
-    @ManyToOne
-    @JoinColumn(name = "RTABLE_ID")
-    private RTable rTableId;
+    @Column(name = "RTABLE_ID")
+    private Long rTableId;
     @Column(name = "ATTENDEES")
     private int attendees;
-
-    @ManyToOne
-    @JoinColumn(name = "USER_ID")
-    private User userId;
+    @Column(name = "USER_ID")
+    private Long userId;
 
 
     public Long getReservationId() {
@@ -46,11 +43,11 @@ public class Reservation {
         this.date = date;
     }
 
-    public RTable getrTableId() {
+    public Long getRTableId() {
         return rTableId;
     }
 
-    public void setrTableId(RTable rTableId) {
+    public void setRTableId(Long rTableId) {
         this.rTableId = rTableId;
     }
 
@@ -62,11 +59,11 @@ public class Reservation {
         this.attendees = attendees;
     }
 
-    public User getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(User userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 

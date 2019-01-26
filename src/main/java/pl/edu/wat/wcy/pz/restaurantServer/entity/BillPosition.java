@@ -20,9 +20,8 @@ public class BillPosition {
     @JoinColumn(name = "DISH_ID")
     private Dish dishId;
 
-    @ManyToOne
-    @JoinColumn(name = "BILL_ID")
-    private Bill billId;
+    @Column(name = "BILL_ID")
+    private Long billId;
 
     public Long getBillPositionId() {
         return billPositionId;
@@ -40,11 +39,11 @@ public class BillPosition {
         this.dishId = dishId;
     }
 
-    public Bill getBillId() {
+    public Long getBillId() {
         return billId;
     }
 
-    public void setBillId(Bill billId) {
+    public void setBillId(Long billId) {
         this.billId = billId;
     }
 

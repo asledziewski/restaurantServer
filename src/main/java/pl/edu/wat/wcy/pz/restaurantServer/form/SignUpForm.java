@@ -11,19 +11,10 @@ import java.util.Set;
 @Getter
 @Setter
 public class SignUpForm {
-    @NotBlank
-    @Email
-    @Size(max = 50)
     private String mail;
-    @NotBlank
-    @Size(max = 50)
     private String firstName;
-    @NotBlank
-    @Size(max = 50)
     private String lastName;
     private Set<String> roles;
-    @NotBlank
-    @Size(min = 6, max = 30)
     private String password;
 
     public String getMail() {

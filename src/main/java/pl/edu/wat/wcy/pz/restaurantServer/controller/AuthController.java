@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.web.server.ResponseStatusException;
 import pl.edu.wat.wcy.pz.restaurantServer.entity.Role;
 import pl.edu.wat.wcy.pz.restaurantServer.entity.User;
 import pl.edu.wat.wcy.pz.restaurantServer.form.LoginForm;
@@ -24,6 +25,7 @@ import pl.edu.wat.wcy.pz.restaurantServer.security.jwt.JwtProvider;
 
 import javax.validation.Valid;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -45,7 +47,7 @@ public class AuthController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginForm loginForm) {
+    public ResponseEntity<?> authenticateUser(@RequestBody LoginForm loginForm) {
 
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginForm.getMail(), loginForm.getPassword()));
 
@@ -57,19 +59,28 @@ public class AuthController {
         UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         LOGGER.info("Logged user: " + principal.getUsername() + ". Authorities: " + principal.getAuthorities().toString());
 
-        return ResponseEntity.ok(new JwtResponse(jwt, userDetails.getUsername(), userDetails.getAuthorities()));
-    }
+        Optional<User> user = userRepository.findByMail(principal.getUsername());
+        if(user.isPresent()) {
+            return ResponseEntity.ok(new JwtResponse(jwt, user.get()));
+        }
+        else{
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Invalid login data.");
+            }
+        }
+
 
     @PostMapping("/register")
-    public ResponseEntity<?> createUser(@Valid @RequestBody SignUpForm signUpForm) {
+    public void createUser(@RequestBody SignUpForm signUpForm) {
         if (userRepository.existsByMail(signUpForm.getMail())) {
-            return new ResponseEntity<>("User with this e-mail already exist", HttpStatus.BAD_REQUEST);
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN, "User with this email already exists.");
         }
 
         Set<Role> roles = new HashSet<>();
         signUpForm.getRoles().forEach(roleName -> {
             if (roleName.equalsIgnoreCase(roleName)) {
-                Role role = roleRepository.findByRoleName(roleName).orElseThrow(() -> new RuntimeException("Role not found: " + roleName));
+                Role role = roleRepository.findByRoleName(roleName).orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "Role not found: " + roleName));
                 roles.add(role);
             }
 
@@ -80,7 +91,7 @@ public class AuthController {
 
         userRepository.save(user);
 
-
-        return new ResponseEntity<>("User created!", HttpStatus.CREATED);
+        throw new ResponseStatusException(HttpStatus.CREATED, "Registration successful");
+//        return new ResponseEntity<>("User created!", HttpStatus.CREATED);
     }
 }
