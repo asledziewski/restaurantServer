@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.web.server.ResponseStatusException;
+import pl.edu.wat.wcy.pz.restaurantServer.email.MailService;
 import pl.edu.wat.wcy.pz.restaurantServer.entity.Role;
 import pl.edu.wat.wcy.pz.restaurantServer.entity.User;
 import pl.edu.wat.wcy.pz.restaurantServer.form.LoginForm;
@@ -40,6 +41,7 @@ public class AuthController {
 
     private UserRepository userRepository;
     private RoleRepository roleRepository;
+    private MailService mailService;
 
     private PasswordEncoder encoder;
     private JwtProvider jwtProvider;
@@ -90,6 +92,7 @@ public class AuthController {
                 encoder.encode(signUpForm.getPassword()), roles);
 
         userRepository.save(user);
+        mailService.sendEmail(user.getMail(), "Welcome to Restaurant!", "Hello " + user.getFirstName() + ", thanks for using our system!");
 
         throw new ResponseStatusException(HttpStatus.CREATED, "Registration successful");
 //        return new ResponseEntity<>("User created!", HttpStatus.CREATED);

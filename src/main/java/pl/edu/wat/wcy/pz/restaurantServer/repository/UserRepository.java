@@ -1,7 +1,6 @@
 package pl.edu.wat.wcy.pz.restaurantServer.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import pl.edu.wat.wcy.pz.restaurantServer.entity.User;
 
@@ -12,6 +11,7 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     Boolean existsByMail(String mail);
+
     Optional<User> findByMail(String mail);
 
 }

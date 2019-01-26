@@ -1,15 +1,15 @@
 package pl.edu.wat.wcy.pz.restaurantServer.email;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+
 @Service
-public class MailService{
+public class MailService {
 
     private final JavaMailSender javaMailSender;
 
@@ -27,8 +27,7 @@ public class MailService{
             helper.setFrom("restaurantprojectPZ@gmail.com");
             helper.setSubject(subject);
             helper.setText(content);
-        }
-        catch(MessagingException e) {
+        } catch (MessagingException e) {
             e.printStackTrace();
         }
 

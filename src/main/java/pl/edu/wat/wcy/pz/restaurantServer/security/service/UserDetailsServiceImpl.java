@@ -5,8 +5,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import pl.edu.wat.wcy.pz.restaurantServer.repository.UserRepository;
 import pl.edu.wat.wcy.pz.restaurantServer.entity.User;
+import pl.edu.wat.wcy.pz.restaurantServer.repository.UserRepository;
 
 @Service
 @AllArgsConstructor

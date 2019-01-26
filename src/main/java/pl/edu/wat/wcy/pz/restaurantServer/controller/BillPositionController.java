@@ -1,15 +1,10 @@
 package pl.edu.wat.wcy.pz.restaurantServer.controller;
 
 import lombok.AllArgsConstructor;
-import org.hibernate.ObjectNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.edu.wat.wcy.pz.restaurantServer.entity.BillPosition;
 import pl.edu.wat.wcy.pz.restaurantServer.service.BillPositionService;
 
-import java.net.URI;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -28,24 +23,14 @@ public class BillPositionController {
 
 
     @GetMapping(value = "/billPositions/{id}")
-    public BillPosition getBillPositionById(@PathVariable(name = "id") Long id){
+    public BillPosition getBillPositionById(@PathVariable(name = "id") Long id) {
         Optional<BillPosition> billPosition = billPositionService.getBillPositionById(id);
-        if(!billPosition.isPresent())
-            throw new RuntimeException("BillPosition not found");
-
         return billPosition.orElse(null);
     }
 
     @PostMapping("/billPositions")
-    public ResponseEntity<Object> addBillPosition(@RequestBody BillPosition billPosition) {
-        BillPosition createdBillPosition = billPositionService.addBillPosition(billPosition);
-
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(createdBillPosition.getBillPositionId())
-                .toUri();
-        return ResponseEntity.created(location).build();
+    public void addBillPosition(@RequestBody BillPosition billPosition) {
+        billPositionService.addBillPosition(billPosition);
     }
 
     @PutMapping("/billPositions/{id}")
@@ -55,10 +40,8 @@ public class BillPositionController {
     }
 
     @DeleteMapping("/billPositions/{id}")
-    public void deleteBillPosition(@PathVariable("id") Long id){
+    public void deleteBillPosition(@PathVariable("id") Long id) {
         Optional<BillPosition> billPosition = billPositionService.getBillPositionById(id);
-        if(!billPosition.isPresent())
-            throw new RuntimeException("BillPosition not found");
         billPositionService.deleteBillPositionById(id);
     }
 

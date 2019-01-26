@@ -18,16 +18,16 @@ import java.util.stream.Collectors;
 public class UserPrinciple implements UserDetails {
     private static final long serialVersionUID = 1L;
 
-    private Long id;
-    private String username;
+    private final Long id;
+    private final String username;
     @JsonIgnore
-    private String password;
-    private Collection<? extends GrantedAuthority> authorities;
+    private final String password;
+    private final Collection<? extends GrantedAuthority> authorities;
 
-    public UserPrinciple(Long userId, String mail, String password, List<GrantedAuthority> grantedAuthorities) {
+    private UserPrinciple(Long userId, String mail, String password, List<GrantedAuthority> grantedAuthorities) {
         this.id = userId;
         this.username = mail;
-        this. password = password;
+        this.password = password;
         this.authorities = grantedAuthorities;
     }
 

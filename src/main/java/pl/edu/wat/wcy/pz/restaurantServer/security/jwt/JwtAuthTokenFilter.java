@@ -11,7 +11,6 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.web.filter.OncePerRequestFilter;
 import pl.edu.wat.wcy.pz.restaurantServer.security.service.UserDetailsServiceImpl;
 
-
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -22,12 +21,11 @@ import java.io.IOException;
 @NoArgsConstructor
 public class JwtAuthTokenFilter extends OncePerRequestFilter {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(JwtAuthTokenFilter.class);
     @Autowired
     private JwtProvider jwtProvider;
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(JwtAuthTokenFilter.class);
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {

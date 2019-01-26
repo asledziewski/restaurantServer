@@ -12,7 +12,7 @@ import java.util.Date;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Message {
+class Message {
     private String username;
     private String message;
     private Date date;

@@ -11,7 +11,7 @@ import pl.edu.wat.wcy.pz.restaurantServer.repository.RoleRepository;
 public class RestaurantServerApplication {
 
     public static void main(String[] args) {
-            SpringApplication.run(RestaurantServerApplication.class, args);
+        SpringApplication.run(RestaurantServerApplication.class, args);
     }
 
     @Bean

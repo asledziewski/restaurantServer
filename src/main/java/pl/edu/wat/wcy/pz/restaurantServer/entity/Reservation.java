@@ -1,16 +1,16 @@
 package pl.edu.wat.wcy.pz.restaurantServer.entity;
 
-import lombok.*;
-import org.hibernate.annotations.NaturalId;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(uniqueConstraints = {@UniqueConstraint(columnNames={"DATE", "RTABLE_ID"})})
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"DATE", "RTABLE_ID"})})
 @Builder
 public class Reservation {
     @Id
@@ -19,12 +19,18 @@ public class Reservation {
     private Long reservationId;
     @Column(name = "DATE")
     private Date date;
+    @Column(name = "DATE_DAYS")
+    private String dateDays;
+    @Column(name = "DATE_TIME")
+    private String dateTime;
     @Column(name = "RTABLE_ID")
     private Long rTableId;
     @Column(name = "ATTENDEES")
     private int attendees;
     @Column(name = "USER_ID")
     private Long userId;
+    @Column(name = "STATUS")
+    private String status;
 
 
     public Long getReservationId() {
@@ -41,6 +47,30 @@ public class Reservation {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public String getDateDays() {
+        return dateDays;
+    }
+
+    public void setDateDays(String dateDays) {
+        this.dateDays = dateDays;
+    }
+
+    public String getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(String dateTime) {
+        this.dateTime = dateTime;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public Long getRTableId() {
@@ -66,7 +96,6 @@ public class Reservation {
     public void setUserId(Long userId) {
         this.userId = userId;
     }
-
 
 
 }

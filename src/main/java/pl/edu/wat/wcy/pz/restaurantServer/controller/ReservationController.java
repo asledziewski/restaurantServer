@@ -1,16 +1,15 @@
 package pl.edu.wat.wcy.pz.restaurantServer.controller;
 
 import lombok.AllArgsConstructor;
-import org.hibernate.ObjectNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.server.ResponseStatusException;
 import pl.edu.wat.wcy.pz.restaurantServer.entity.Reservation;
 import pl.edu.wat.wcy.pz.restaurantServer.service.ReservationService;
 
-import java.net.URI;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Optional;
 
 @AllArgsConstructor
@@ -26,26 +25,33 @@ public class ReservationController {
         return reservationService.getReservations();
     }
 
+    @GetMapping("/reservations/current")
+    public Collection<Reservation> getCurrentReservations() {
+        return reservationService.getCurrentReservations();
+    }
 
     @GetMapping(value = "/reservations/{id}")
-    public Reservation getReservationById(@PathVariable(name = "id") Long id){
+    public Reservation getReservationById(@PathVariable(name = "id") Long id) {
         Optional<Reservation> reservation = reservationService.getReservationById(id);
-        if(!reservation.isPresent())
-            throw new RuntimeException("Reservation not found");
-
         return reservation.orElse(null);
     }
 
     @PostMapping("/reservations")
-    public ResponseEntity<Object> addReservation(@RequestBody Reservation reservation) {
-        Reservation createdReservation = reservationService.addReservation(reservation);
-
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(createdReservation.getReservationId())
-                .toUri();
-        return ResponseEntity.created(location).build();
+    public void addReservation(@RequestBody Reservation reservation) {
+        Date date = reservation.getDate();
+        if (date != null) {
+            if(date.before(new Date())){
+                throw new ResponseStatusException(
+                        HttpStatus.FORBIDDEN, "Can't make reservation for past dates.");
+            }
+            SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
+            SimpleDateFormat timeFormatter = new SimpleDateFormat("HH:mm");
+            String dateDays = dateFormatter.format(date);
+            String dateTime = timeFormatter.format(date);
+            reservation.setDateDays(dateDays);
+            reservation.setDateTime(dateTime);
+        }
+        reservationService.addReservation(reservation);
     }
 
     @PutMapping("/reservations/{id}")
@@ -55,10 +61,8 @@ public class ReservationController {
     }
 
     @DeleteMapping("/reservations/{id}")
-    public void deleteReservation(@PathVariable("id") Long id){
+    public void deleteReservation(@PathVariable("id") Long id) {
         Optional<Reservation> reservation = reservationService.getReservationById(id);
-        if(!reservation.isPresent())
-            throw new RuntimeException("Reservation not found");
         reservationService.deleteReservationById(id);
     }
 

@@ -1,7 +1,8 @@
 package pl.edu.wat.wcy.pz.restaurantServer.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -19,7 +20,7 @@ public class Bill {
     private Long billId;
     @Column(name = "STATUS")
     private String status;
-    @Column(name ="CREATION_DATE")
+    @Column(name = "CREATION_DATE")
     private Date creationDate;
     @Column(name = "RTABLE_ID")
     private Long rTableId;
@@ -69,7 +70,7 @@ public class Bill {
         this.value = value;
     }
 
-    public void changeValue(double value){
+    public void changeValue(double value) {
         this.value += value;
     }
 

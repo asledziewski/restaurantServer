@@ -1,7 +1,8 @@
 package pl.edu.wat.wcy.pz.restaurantServer.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
@@ -25,7 +26,7 @@ public class RTable {
     private String status;
 
 
-    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "rTableId")
     private List<Reservation> reservations;
 
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "rTableId")
@@ -80,7 +81,7 @@ public class RTable {
         this.bills = bills;
     }
 
-    public void addBill(Bill bill){
+    public void addBill(Bill bill) {
         this.bills.add(bill);
     }
 

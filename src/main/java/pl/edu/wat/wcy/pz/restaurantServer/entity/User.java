@@ -1,10 +1,11 @@
 package pl.edu.wat.wcy.pz.restaurantServer.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -33,7 +34,7 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "ROLE_ID"))
     private Set<Role> roles;
 
-    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "userId")
     private List<Reservation> reservations;
 
     public User(String mail, String firstName, String lastName, String password, Set<Role> roles) {
@@ -100,7 +101,6 @@ public class User {
     public void setReservations(List<Reservation> reservations) {
         this.reservations = reservations;
     }
-
 
 
 }

@@ -1,15 +1,10 @@
 package pl.edu.wat.wcy.pz.restaurantServer.controller;
 
 import lombok.AllArgsConstructor;
-import org.hibernate.ObjectNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.edu.wat.wcy.pz.restaurantServer.entity.Dish;
 import pl.edu.wat.wcy.pz.restaurantServer.service.DishService;
 
-import java.net.URI;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -28,24 +23,14 @@ public class DishController {
 
 
     @GetMapping(value = "/dishes/{id}")
-    public Dish getDishById(@PathVariable(name = "id") Long id){
+    public Dish getDishById(@PathVariable(name = "id") Long id) {
         Optional<Dish> dish = dishService.getDishById(id);
-        if(!dish.isPresent())
-            throw new RuntimeException("Dish not found");
-
         return dish.orElse(null);
     }
 
     @PostMapping("/dishes")
-    public ResponseEntity<Object> addDish(@RequestBody Dish dish) {
-        Dish createdDish = dishService.addDish(dish);
-
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(createdDish.getDishId())
-                .toUri();
-        return ResponseEntity.created(location).build();
+    public void addDish(@RequestBody Dish dish) {
+        dishService.addDish(dish);
     }
 
     @PutMapping("/dishes/{id}")
@@ -55,9 +40,9 @@ public class DishController {
     }
 
     @DeleteMapping("/dishes/{id}")
-    public void deleteDish(@PathVariable("id") Long id){
+    public void deleteDish(@PathVariable("id") Long id) {
         Optional<Dish> dish = dishService.getDishById(id);
-        if(!dish.isPresent())
+        if (!dish.isPresent())
             throw new RuntimeException("Dish not found");
         dishService.deleteDishById(id);
     }

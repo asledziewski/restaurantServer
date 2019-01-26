@@ -26,7 +26,7 @@ import pl.edu.wat.wcy.pz.restaurantServer.security.service.UserDetailsServiceImp
 )
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    UserDetailsServiceImpl userDetailsService;
+    private UserDetailsServiceImpl userDetailsService;
 
     private JwtAuthEntryPoint unauthorizedHandler;
 
@@ -64,7 +64,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 //                .antMatchers("/reservation/**").permitAll()
 //                .antMatchers("/about/**").permitAll()
 //                .antMatchers("/users/**").permitAll()
-                  .antMatchers("/**").permitAll()
+                .antMatchers("/**").permitAll()
                 .anyRequest().authenticated().and()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

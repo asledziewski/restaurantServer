@@ -1,15 +1,12 @@
 package pl.edu.wat.wcy.pz.restaurantServer.controller;
 
 import lombok.AllArgsConstructor;
-import org.hibernate.ObjectNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import pl.edu.wat.wcy.pz.restaurantServer.entity.Bill;
 import pl.edu.wat.wcy.pz.restaurantServer.entity.RTable;
+import pl.edu.wat.wcy.pz.restaurantServer.entity.Reservation;
 import pl.edu.wat.wcy.pz.restaurantServer.service.RTableService;
 
-import java.net.URI;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -28,24 +25,24 @@ public class RTableController {
 
 
     @GetMapping(value = "/rTables/{id}")
-    public RTable getRTableById(@PathVariable(name = "id") Long id){
+    public RTable getRTableById(@PathVariable(name = "id") Long id) {
         Optional<RTable> rTable = rTableService.getRTableById(id);
-        if(!rTable.isPresent())
-            throw new RuntimeException("RTable not found");
-
         return rTable.orElse(null);
     }
 
-    @PostMapping("/rTables")
-    public ResponseEntity<Object> addRTable(@RequestBody RTable rTable) {
-        RTable createdRTable = rTableService.addRTable(rTable);
+    @GetMapping(value = "/rTables/{id}/reservations")
+    public Collection<Reservation> getRTableReservations(@PathVariable(name = "id") Long id) {
+        return rTableService.getRTableReservations(id);
+    }
 
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(createdRTable.getRTableId())
-                .toUri();
-        return ResponseEntity.created(location).build();
+    @GetMapping(value = "/rTables/{id}/bills")
+    public Collection<Bill> getRTableBills(@PathVariable(name = "id") Long id) {
+        return rTableService.getRTableBills(id);
+    }
+
+    @PostMapping("/rTables")
+    public void addRTable(@RequestBody RTable rTable) {
+        rTableService.addRTable(rTable);
     }
 
     @PutMapping("/rTables/{id}")
@@ -55,10 +52,8 @@ public class RTableController {
     }
 
     @DeleteMapping("/rTables/{id}")
-    public void deleteRTable(@PathVariable("id") Long id){
+    public void deleteRTable(@PathVariable("id") Long id) {
         Optional<RTable> rTable = rTableService.getRTableById(id);
-        if(!rTable.isPresent())
-            throw new RuntimeException("RTable not found");
         rTableService.deleteRTableById(id);
     }
 

@@ -1,6 +1,7 @@
 package pl.edu.wat.wcy.pz.restaurantServer.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
