@@ -30,6 +30,7 @@ public class RTableController {
         return rTable.orElse(null);
     }
 
+
     @GetMapping(value = "/rTables/{id}/reservations")
     public Collection<Reservation> getRTableReservations(@PathVariable(name = "id") Long id) {
         return rTableService.getRTableReservations(id);
@@ -38,6 +39,11 @@ public class RTableController {
     @GetMapping(value = "/rTables/{id}/bills")
     public Collection<Bill> getRTableBills(@PathVariable(name = "id") Long id) {
         return rTableService.getRTableBills(id);
+    }
+
+    @GetMapping(value = "/rTables/{id}/currentBill")
+    public Bill getCurrentBill(@PathVariable(name = "id") Long id){
+        return rTableService.getCurrentBill(id);
     }
 
     @PostMapping("/rTables")

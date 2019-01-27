@@ -7,6 +7,7 @@ import org.springframework.web.server.ResponseStatusException;
 import pl.edu.wat.wcy.pz.restaurantServer.entity.Dish;
 import pl.edu.wat.wcy.pz.restaurantServer.repository.DishRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +19,20 @@ public class DishService {
 
     public List<Dish> getDishes() {
         return dishRepository.findAll();
+    }
+
+    public List<Dish> findDishes(String term) {
+        term = term.toLowerCase();
+        List<Dish> dishes = getDishes();
+        List<Dish> returnDishes = new ArrayList<>();
+        Dish temp;
+        for(int i=0; i<dishes.size(); i++){
+            temp = dishes.get(i);
+            if(temp.getEnglishName().toLowerCase().contains(term)){
+                returnDishes.add(temp);
+            }
+        }
+        return returnDishes;
     }
 
     public Optional<Dish> getDishById(Long id) {
@@ -62,5 +77,6 @@ public class DishService {
                     HttpStatus.NOT_FOUND, "Dish not found.");
         }
     }
+
 
 }

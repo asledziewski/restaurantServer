@@ -31,7 +31,7 @@ public class BillController {
         return bill.orElse(null);
     }
 
-    @GetMapping(value = "/rTables/{id}/billPositions")
+    @GetMapping(value = "/bills/{id}/billPositions")
     public Collection<BillPosition> getBillBillPositions(@PathVariable(name = "id") Long id) {
         return billService.getBillBillPositions(id);
     }

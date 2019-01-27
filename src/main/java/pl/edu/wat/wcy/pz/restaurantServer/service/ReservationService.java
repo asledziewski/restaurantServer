@@ -100,7 +100,6 @@ public class ReservationService {
                 }
             }
             if(free){
-                System.out.println("Dodaje " + tempTable.getRTableId());
                 reservable.add(tempTable);
             }
         }

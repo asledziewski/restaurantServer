@@ -28,6 +28,11 @@ public class DishController {
         return dish.orElse(null);
     }
 
+    @GetMapping(value = "/dishes/name={term}")
+    public Collection<Dish> findDishes(@PathVariable(name = "term") String term) {
+        return dishService.findDishes(term);
+    }
+
     @PostMapping("/dishes")
     public void addDish(@RequestBody Dish dish) {
         dishService.addDish(dish);

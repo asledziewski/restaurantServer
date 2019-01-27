@@ -79,5 +79,17 @@ public class RTableService {
         return rTable.get().getBills();
     }
 
+    public Bill getCurrentBill(Long id){
+        List <Bill> bills = getRTableBills(id);
+        Bill temp;
+        for(int i=0; i<bills.size(); i++){
+            temp = bills.get(i);
+            if(temp.getStatus().equals("IN_PROGRESS")){
+                return temp;
+            }
+        }
+        throw new ResponseStatusException(
+                HttpStatus.NOT_FOUND, "Table don't have active bills.");
+    }
 
 }

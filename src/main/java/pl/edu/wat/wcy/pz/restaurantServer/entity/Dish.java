@@ -22,6 +22,12 @@ public class Dish {
     @Column(name = "PRICE")
     private double price;
 
+    public Dish(String englishName, String polishName, double price) {
+        this.englishName = englishName;
+        this.polishName = polishName;
+        this.price = price;
+    }
+
     public Long getDishId() {
         return dishId;
     }

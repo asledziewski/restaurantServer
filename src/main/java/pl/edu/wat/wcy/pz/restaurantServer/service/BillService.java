@@ -38,24 +38,26 @@ public class BillService {
 
 
     public void addBill(Bill bill) {
-        List<Bill> billList = billRepository.findAll();
-        if (billList.stream().map(Bill::getRTableId).anyMatch(bill.getRTableId()::equals) && billList.stream().map(Bill::getCreationDate).anyMatch(bill.getCreationDate()::equals))
-            throw new ResponseStatusException(
-                    HttpStatus.FORBIDDEN, "Bill for this table and date already exists.");
-        else {
-            bill.setValue(0);
-            bill.setStatus("IN_PROGRESS");
-            bill.setCreationDate(new Date());
-            Optional<RTable> rTable = rTableRepository.findById(bill.getRTableId());
-            if (rTable.isPresent()) {
-                rTable.get().setStatus("BUSY");
-                billRepository.save(bill);
-            } else {
+        Optional<RTable> rTable = rTableRepository.findById(bill.getRTableId());
+        if (rTable.isPresent()){
+            if (rTable.get().getStatus().equals("BUSY")) {
+                throw new ResponseStatusException(
+                        HttpStatus.FORBIDDEN, "This table is already being served.");
+            }
+            else {
+                bill.setValue(0);
+                bill.setStatus("IN_PROGRESS");
+                bill.setCreationDate(new Date());
+                    rTable.get().setStatus("BUSY");
+                    billRepository.save(bill);
+                }
+            }
+            else{
                 throw new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Table not found.");
-            }
         }
     }
+
 
     public void updateBill(Long id, Bill bill) {
 

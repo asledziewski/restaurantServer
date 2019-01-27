@@ -34,14 +34,13 @@ public class BillPositionService {
 
     public void addBillPosition(BillPosition billPosition) {
         //  List<BillPosition> billPositionList = billPositionRepository.findAll();
-
 //        if (billPositionList.stream().map(BillPosition::getEnglishName).anyMatch(billPosition.getEnglishName()::equals) || billPositionList.stream().map(BillPosition::getPolishName).anyMatch(billPosition.getPolishName()::equals))
 //            throw new RuntimeException("BillPosition with this name already exists.");
         if (billService.getBillById(billPosition.getBillId()).get().getStatus().equals("PAID")) {
             throw new ResponseStatusException(
                     HttpStatus.FORBIDDEN, "Bill has been closed.");
         } else {
-            billPosition.setDishId(dishService.getDishById(billPosition.getDishId().getDishId()).get());
+            billPosition.setDishId(billPosition.getDishId());
             billService.getBillById(billPosition.getBillId()).get().changeValue(billPosition.getDishId().getPrice());
             billPositionRepository.save(billPosition);
         }

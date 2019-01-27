@@ -32,6 +32,12 @@ public class RTable {
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "rTableId")
     private List<Bill> bills;
 
+    public RTable(int number, int size, String status) {
+        this.number = number;
+        this.size = size;
+        this.status = status;
+    }
+
 
     public Long getRTableId() {
         return rTableId;
@@ -84,6 +90,7 @@ public class RTable {
     public void addBill(Bill bill) {
         this.bills.add(bill);
     }
+
 
 
 }

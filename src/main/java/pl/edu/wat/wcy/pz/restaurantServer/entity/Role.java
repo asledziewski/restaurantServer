@@ -18,11 +18,6 @@ public class Role {
     @Column(name = "ROLE_NAME")
     private String roleName;
 
-    public Role(long id, String roleName) {
-        this.roleId = id;
-        this.roleName = roleName;
-    }
-
     public Long getRoleId() {
         return roleId;
     }

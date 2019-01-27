@@ -2,6 +2,7 @@ package pl.edu.wat.wcy.pz.restaurantServer.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import pl.edu.wat.wcy.pz.restaurantServer.entity.Reservation;
@@ -16,6 +17,7 @@ import java.util.Optional;
 public class UserService {
 
     private UserRepository userRepository;
+    private PasswordEncoder encoder;
 
     public List<User> getUsers() {
         return userRepository.findAll();
@@ -38,6 +40,8 @@ public class UserService {
             throw new ResponseStatusException(
                     HttpStatus.FORBIDDEN, "User with this email already exists.");
         } else {
+            String password = encoder.encode(user.getPassword());
+            user.setPassword(password);
             userRepository.save(user);
         }
     }
