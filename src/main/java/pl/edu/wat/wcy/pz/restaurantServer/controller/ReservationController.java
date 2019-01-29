@@ -40,7 +40,7 @@ public class ReservationController {
     public void addReservation(@RequestBody Reservation reservation) {
         Date date = reservation.getDate();
         if (date != null) {
-            if(date.before(new Date())){
+            if (date.before(new Date())) {
                 throw new ResponseStatusException(
                         HttpStatus.FORBIDDEN, "Can't make reservation for past dates.");
             }

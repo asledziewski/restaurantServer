@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import pl.edu.wat.wcy.pz.restaurantServer.entity.Bill;
 import pl.edu.wat.wcy.pz.restaurantServer.entity.BillPosition;
 import pl.edu.wat.wcy.pz.restaurantServer.repository.BillPositionRepository;
 
@@ -33,22 +34,14 @@ public class BillPositionService {
     }
 
     public void addBillPosition(BillPosition billPosition) {
-        //  List<BillPosition> billPositionList = billPositionRepository.findAll();
-//        if (billPositionList.stream().map(BillPosition::getEnglishName).anyMatch(billPosition.getEnglishName()::equals) || billPositionList.stream().map(BillPosition::getPolishName).anyMatch(billPosition.getPolishName()::equals))
-//            throw new RuntimeException("BillPosition with this name already exists.");
         if (billService.getBillById(billPosition.getBillId()).get().getStatus().equals("PAID")) {
             throw new ResponseStatusException(
-                    HttpStatus.FORBIDDEN, "Bill has been closed.");
+                    HttpStatus.FORBIDDEN, "Bill has already been closed.");
         } else {
             billPosition.setDishId(billPosition.getDishId());
             billService.getBillById(billPosition.getBillId()).get().changeValue(billPosition.getDishId().getPrice());
             billPositionRepository.save(billPosition);
         }
-//        Bill bill = billRepository.getOne(billPosition.getBillId().getBillId());
-//        bill.getBillPositions().add(billPosition);
-//        billRepository.save(bill);
-//        Dish dish = billPosition.getDishId();
-//        System.out.println(dish.getEnglishName() + " " + dish.getPrice());
 
 
     }
@@ -69,8 +62,14 @@ public class BillPositionService {
     public void deleteBillPositionById(Long id) {
         Optional<BillPosition> billPosition = billPositionRepository.findById(id);
         if (billPosition.isPresent()) {
-            billService.getBillById(billPosition.get().getBillId()).get().changeValue(-billPosition.get().getDishId().getPrice());
-            billPositionRepository.deleteById(id);
+            if (billService.getBillById(billPosition.get().getBillId()).get().getStatus().equals("PAID")) {
+                throw new ResponseStatusException(
+                        HttpStatus.FORBIDDEN, "Bill has already been closed.");
+            }
+            else {
+                billService.getBillById(billPosition.get().getBillId()).get().changeValue(-billPosition.get().getDishId().getPrice());
+                billPositionRepository.deleteById(id);
+            }
         } else {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "BillPosition not found.");

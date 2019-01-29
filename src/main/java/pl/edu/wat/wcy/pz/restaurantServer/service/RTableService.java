@@ -79,12 +79,12 @@ public class RTableService {
         return rTable.get().getBills();
     }
 
-    public Bill getCurrentBill(Long id){
-        List <Bill> bills = getRTableBills(id);
+    public Bill getCurrentBill(Long id) {
+        List<Bill> bills = getRTableBills(id);
         Bill temp;
-        for(int i=0; i<bills.size(); i++){
+        for (int i = 0; i < bills.size(); i++) {
             temp = bills.get(i);
-            if(temp.getStatus().equals("IN_PROGRESS")){
+            if (temp.getStatus().equals("IN_PROGRESS")) {
                 return temp;
             }
         }

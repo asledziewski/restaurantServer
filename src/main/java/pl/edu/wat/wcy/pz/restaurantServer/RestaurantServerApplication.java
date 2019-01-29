@@ -13,10 +13,8 @@ import pl.edu.wat.wcy.pz.restaurantServer.repository.RTableRepository;
 import pl.edu.wat.wcy.pz.restaurantServer.repository.RoleRepository;
 import pl.edu.wat.wcy.pz.restaurantServer.repository.UserRepository;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.SortedSet;
 
 @SpringBootApplication
 public class RestaurantServerApplication {
@@ -37,7 +35,7 @@ public class RestaurantServerApplication {
             Set<Role> roles = new HashSet<>();
             roles.add(role3);
             roles.add(role2);
-            User worker = new User("w@w.pl", "Worker", "Worker","$2a$10$ELwxAkpJa2daHpaIKkY/XOeq8FxyyRQhIfjOvv3FU.I4NLBOciMP.", roles);
+            User worker = new User("w@w.pl", "Worker", "Worker", "$2a$10$ELwxAkpJa2daHpaIKkY/XOeq8FxyyRQhIfjOvv3FU.I4NLBOciMP.", roles);
             userRepository.save(worker);
             roles.add(role);
             User admin = new User("a@a.pl", "Admin", "Admin", "$2a$10$ELwxAkpJa2daHpaIKkY/XOeq8FxyyRQhIfjOvv3FU.I4NLBOciMP.", roles);

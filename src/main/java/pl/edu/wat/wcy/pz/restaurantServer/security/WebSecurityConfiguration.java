@@ -59,17 +59,12 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/auth/**").permitAll()
                 .antMatchers("/dishes/**").permitAll()
-                .antMatchers("/reservations/**").permitAll()
-                .antMatchers("/bills/**").permitAll()
-//                .antMatchers("/users/**").permitAll()
-//                .antMatchers("/**").permitAll()
                 .anyRequest().authenticated().and()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 
-        //only for h2-console
         http.headers().frameOptions().disable();
     }
 }

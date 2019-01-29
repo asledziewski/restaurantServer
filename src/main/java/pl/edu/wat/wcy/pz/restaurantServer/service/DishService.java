@@ -26,9 +26,9 @@ public class DishService {
         List<Dish> dishes = getDishes();
         List<Dish> returnDishes = new ArrayList<>();
         Dish temp;
-        for(int i=0; i<dishes.size(); i++){
+        for (int i = 0; i < dishes.size(); i++) {
             temp = dishes.get(i);
-            if(temp.getEnglishName().toLowerCase().contains(term)){
+            if (temp.getEnglishName().toLowerCase().contains(term)) {
                 returnDishes.add(temp);
             }
         }

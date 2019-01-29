@@ -70,7 +70,7 @@ public class Bill {
         this.value = value;
     }
 
-    public void changeValue(    double value) {
+    public void changeValue(double value) {
         this.value += value;
     }
 

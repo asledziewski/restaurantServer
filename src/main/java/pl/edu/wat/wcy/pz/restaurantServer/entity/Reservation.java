@@ -25,6 +25,8 @@ public class Reservation {
     private String dateTime;
     @Column(name = "RTABLE_ID")
     private Long rTableId;
+    @Column(name = "RTABLE_NUMBER")
+    private int rTableNumber;
     @Column(name = "ATTENDEES")
     private int attendees;
     @Column(name = "USER_ID")
@@ -79,6 +81,14 @@ public class Reservation {
 
     public void setRTableId(Long rTableId) {
         this.rTableId = rTableId;
+    }
+
+    public int getrTableNumber() {
+        return rTableNumber;
+    }
+
+    public void setrTableNumber(int rTableNumber) {
+        this.rTableNumber = rTableNumber;
     }
 
     public int getAttendees() {

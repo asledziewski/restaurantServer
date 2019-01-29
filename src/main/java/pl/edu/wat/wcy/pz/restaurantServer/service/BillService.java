@@ -39,22 +39,20 @@ public class BillService {
 
     public void addBill(Bill bill) {
         Optional<RTable> rTable = rTableRepository.findById(bill.getRTableId());
-        if (rTable.isPresent()){
+        if (rTable.isPresent()) {
             if (rTable.get().getStatus().equals("BUSY")) {
                 throw new ResponseStatusException(
                         HttpStatus.FORBIDDEN, "This table is already being served.");
-            }
-            else {
+            } else {
                 bill.setValue(0);
                 bill.setStatus("IN_PROGRESS");
                 bill.setCreationDate(new Date());
-                    rTable.get().setStatus("BUSY");
-                    billRepository.save(bill);
-                }
+                rTable.get().setStatus("BUSY");
+                billRepository.save(bill);
             }
-            else{
-                throw new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Table not found.");
+        } else {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Table not found.");
         }
     }
 

@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 public class Role {
@@ -17,6 +16,11 @@ public class Role {
 
     @Column(name = "ROLE_NAME")
     private String roleName;
+
+    public Role(Long roleId, String roleName){
+        this.roleId = roleId;
+        this.roleName = roleName;
+    }
 
     public Long getRoleId() {
         return roleId;

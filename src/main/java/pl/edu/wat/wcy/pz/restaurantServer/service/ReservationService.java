@@ -1,7 +1,6 @@
 package pl.edu.wat.wcy.pz.restaurantServer.service;
 
 import lombok.AllArgsConstructor;
-import org.hibernate.annotations.Tables;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -58,7 +57,7 @@ public class ReservationService {
 
     public void addReservation(Reservation reservation) {
         Long tabId = getTableId(reservation);
-        if(tabId.equals(Long.valueOf(-1))){
+        if (tabId.equals(Long.valueOf(-1))) {
             throw new ResponseStatusException(
                     HttpStatus.FORBIDDEN, "Couldn't find suitable table for this date.");
         }
@@ -76,12 +75,13 @@ public class ReservationService {
                         reservation.getRTableId() + " is waiting for you";
                 mailService.sendEmail(mail, "Reservation has been made.", sb);
             }
+            reservation.setrTableNumber(rTableService.getRTableById(tabId).get().getNumber());
             reservation.setStatus("PENDING");
             reservationRepository.save(reservation);
         }
     }
 
-    public Long getTableId(Reservation reservation){
+    public Long getTableId(Reservation reservation) {
         List<RTable> tableList = rTableService.getRTablesBySize(reservation.getAttendees());
         List<RTable> reservable = new ArrayList<>();
         String dateDays = reservation.getDateDays();
@@ -89,27 +89,27 @@ public class ReservationService {
         RTable tempTable;
         Reservation tempReservation;
         boolean free;
-        for(int i=0; i<tableList.size(); i++){
+        for (int i = 0; i < tableList.size(); i++) {
             free = true;
             tempTable = tableList.get(i);
             List<Reservation> tempReservations = tempTable.getReservations();
-            for(int j=0; j<tempReservations.size(); j++){
+            for (int j = 0; j < tempReservations.size(); j++) {
                 tempReservation = tempReservations.get(j);
-                if(tempReservation.getDateDays().equals(dateDays) && tempReservation.getDateTime().equals(dateTime)){
+                if (tempReservation.getDateDays().equals(dateDays) && tempReservation.getDateTime().equals(dateTime)) {
                     free = false;
                 }
             }
-            if(free){
+            if (free) {
                 reservable.add(tempTable);
             }
         }
-        if(reservable.size()==0){
+        if (reservable.size() == 0) {
             return Long.valueOf(-1);
-        }
-        else{
+        } else {
             return reservable.get(0).getRTableId();
         }
     }
+
     public void updateReservation(Long id, Reservation reservation) {
 
         Optional<Reservation> oldReservation = reservationRepository.findById(id);

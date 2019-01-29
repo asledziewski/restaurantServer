@@ -42,7 +42,7 @@ public class RTableController {
     }
 
     @GetMapping(value = "/rTables/{id}/currentBill")
-    public Bill getCurrentBill(@PathVariable(name = "id") Long id){
+    public Bill getCurrentBill(@PathVariable(name = "id") Long id) {
         return rTableService.getCurrentBill(id);
     }
 

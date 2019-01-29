@@ -12,7 +12,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
 import org.springframework.web.server.ResponseStatusException;
 import pl.edu.wat.wcy.pz.restaurantServer.email.MailService;
 import pl.edu.wat.wcy.pz.restaurantServer.entity.Role;
@@ -24,7 +23,6 @@ import pl.edu.wat.wcy.pz.restaurantServer.repository.RoleRepository;
 import pl.edu.wat.wcy.pz.restaurantServer.repository.UserRepository;
 import pl.edu.wat.wcy.pz.restaurantServer.security.jwt.JwtProvider;
 
-import javax.validation.Valid;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -47,7 +45,6 @@ public class AuthController {
     private JwtProvider jwtProvider;
 
 
-
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginForm loginForm) {
 
@@ -62,14 +59,13 @@ public class AuthController {
         LOGGER.info("Logged user: " + principal.getUsername() + ". Authorities: " + principal.getAuthorities().toString());
 
         Optional<User> user = userRepository.findByMail(principal.getUsername());
-        if(user.isPresent()) {
+        if (user.isPresent()) {
             return ResponseEntity.ok(new JwtResponse(jwt, user.get()));
-        }
-        else{
+        } else {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Invalid login data.");
-            }
         }
+    }
 
 
     @PostMapping("/register")
@@ -95,6 +91,5 @@ public class AuthController {
         mailService.sendEmail(user.getMail(), "Welcome to Restaurant!", "Hello " + user.getFirstName() + ", thanks for using our system!");
 
         throw new ResponseStatusException(HttpStatus.CREATED, "Registration successful");
-//        return new ResponseEntity<>("User created!", HttpStatus.CREATED);
     }
 }
