@@ -1,35 +1,57 @@
 package pl.edu.wat.wcy.pz.restaurantServer.controller;
 
-import org.hibernate.ObjectNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import pl.edu.wat.wcy.pz.restaurantServer.model.Dish;
+import pl.edu.wat.wcy.pz.restaurantServer.entity.Dish;
 import pl.edu.wat.wcy.pz.restaurantServer.service.DishService;
 
 import java.util.Collection;
 import java.util.Optional;
 
-@CrossOrigin(origins = "http://localhost:8101", maxAge = 3600)
+@AllArgsConstructor
 @RestController
+@CrossOrigin
 public class DishController {
 
-    private final DishService dishService;
+    private DishService dishService;
 
-    @Autowired
-    public DishController(DishService dishService) {
-        this.dishService = dishService;
-    }
 
-    @RequestMapping(value = "/dish", method = RequestMethod.GET)
-    public Collection<Dish> getDishs() {
+    @GetMapping("/dishes")
+    public Collection<Dish> getDishes() {
         return dishService.getDishes();
     }
 
 
-    @RequestMapping(value = "/dish/{id}", method = RequestMethod.GET)
-    public Dish getDishById(@PathVariable long id) throws ObjectNotFoundException {
+    @GetMapping(value = "/dishes/{id}")
+    public Dish getDishById(@PathVariable(name = "id") Long id) {
         Optional<Dish> dish = dishService.getDishById(id);
-        return dish.orElseGet(Dish::new);
+        return dish.orElse(null);
     }
+
+    @GetMapping(value = "/dishes/name={term}")
+    public Collection<Dish> findDishes(@PathVariable(name = "term") String term) {
+        return dishService.findDishes(term);
+    }
+
+    @PostMapping("/dishes")
+    public void addDish(@RequestBody Dish dish) {
+        dishService.addDish(dish);
+    }
+
+    @PutMapping("/dishes/{id}")
+    public void updateDish(@PathVariable("id") Long id, @RequestBody Dish dish) {
+        dishService.updateDish(id, dish);
+
+    }
+
+    @DeleteMapping("/dishes/{id}")
+    public void deleteDish(@PathVariable("id") Long id) {
+        Optional<Dish> dish = dishService.getDishById(id);
+        if (!dish.isPresent())
+            throw new RuntimeException("Dish not found");
+        dishService.deleteDishById(id);
+    }
+
+
 }
 

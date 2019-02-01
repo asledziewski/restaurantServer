@@ -1,35 +1,68 @@
 package pl.edu.wat.wcy.pz.restaurantServer.controller;
 
-import org.hibernate.ObjectNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import pl.edu.wat.wcy.pz.restaurantServer.model.RTable;
+import pl.edu.wat.wcy.pz.restaurantServer.entity.Bill;
+import pl.edu.wat.wcy.pz.restaurantServer.entity.RTable;
+import pl.edu.wat.wcy.pz.restaurantServer.entity.Reservation;
 import pl.edu.wat.wcy.pz.restaurantServer.service.RTableService;
 
 import java.util.Collection;
 import java.util.Optional;
 
-@CrossOrigin(origins = "http://localhost:8101", maxAge = 3600)
+@AllArgsConstructor
 @RestController
+@CrossOrigin
 public class RTableController {
 
-    private final RTableService rTableService;
+    private RTableService rTableService;
 
-    @Autowired
-    public RTableController(RTableService rTableService) {
-        this.rTableService = rTableService;
-    }
 
-    @RequestMapping(value = "/rtable", method = RequestMethod.GET)
+    @GetMapping("/rTables")
     public Collection<RTable> getRTables() {
         return rTableService.getRTables();
     }
 
 
-    @RequestMapping(value = "/rtable/{id}", method = RequestMethod.GET)
-    public RTable getRTableById(@PathVariable long id) throws ObjectNotFoundException {
-        Optional<RTable> table = rTableService.getRTableById(id);
-        return table.orElseGet(RTable::new);
+    @GetMapping(value = "/rTables/{id}")
+    public RTable getRTableById(@PathVariable(name = "id") Long id) {
+        Optional<RTable> rTable = rTableService.getRTableById(id);
+        return rTable.orElse(null);
     }
+
+
+    @GetMapping(value = "/rTables/{id}/reservations")
+    public Collection<Reservation> getRTableReservations(@PathVariable(name = "id") Long id) {
+        return rTableService.getRTableReservations(id);
+    }
+
+    @GetMapping(value = "/rTables/{id}/bills")
+    public Collection<Bill> getRTableBills(@PathVariable(name = "id") Long id) {
+        return rTableService.getRTableBills(id);
+    }
+
+    @GetMapping(value = "/rTables/{id}/currentBill")
+    public Bill getCurrentBill(@PathVariable(name = "id") Long id) {
+        return rTableService.getCurrentBill(id);
+    }
+
+    @PostMapping("/rTables")
+    public void addRTable(@RequestBody RTable rTable) {
+        rTableService.addRTable(rTable);
+    }
+
+    @PutMapping("/rTables/{id}")
+    public void updateRTable(@PathVariable("id") Long id, @RequestBody RTable rTable) {
+        rTableService.updateRTable(id, rTable);
+
+    }
+
+    @DeleteMapping("/rTables/{id}")
+    public void deleteRTable(@PathVariable("id") Long id) {
+        Optional<RTable> rTable = rTableService.getRTableById(id);
+        rTableService.deleteRTableById(id);
+    }
+
+
 }
 
