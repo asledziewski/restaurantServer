@@ -3,6 +3,7 @@ package pl.edu.wat.wcy.pz.restaurantServer.entity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 
@@ -21,11 +22,15 @@ public class Dish {
     private String polishName;
     @Column(name = "PRICE")
     private double price;
+    @Column(name = "IMAGE")
+    @Type(type="text")
+    private String image;
 
-    public Dish(String englishName, String polishName, double price) {
+    public Dish(String englishName, String polishName, double price, String image) {
         this.englishName = englishName;
         this.polishName = polishName;
         this.price = price;
+        this.image = image;
     }
 
     public Long getDishId() {
@@ -60,5 +65,11 @@ public class Dish {
         this.price = price;
     }
 
+    public String getImage() {
+        return image;
+    }
 
+    public void setImage(String image) {
+        this.image = image;
+    }
 }
